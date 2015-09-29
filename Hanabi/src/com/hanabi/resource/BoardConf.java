@@ -1,6 +1,8 @@
 package com.hanabi.resource;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.hanabi.type.TileType.Color;
@@ -22,5 +24,19 @@ public class BoardConf {
 			boardConfInstance = new BoardConf();
 		}
 		return boardConfInstance;
+	}
+	
+	public void createTiles() {
+		
+	}
+	
+	class TileBag {
+		
+		
+		
+		public TileBag() {
+			
+		}
+		
 	}
 }
