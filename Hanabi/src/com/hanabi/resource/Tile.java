@@ -6,6 +6,8 @@ public class Tile {
 
 	public int number;
 	public TileType.Color color;
+	public boolean numberHinted = false;
+	public boolean colorHinted = false;
 	
 	public Tile(int n, TileType.Color c) {
 		number = n;
@@ -16,7 +18,7 @@ public class Tile {
 	public String toString() {
 		return "(" + number + ", " + color + ")";
 	} 
-	
+	/*
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -40,5 +42,5 @@ public class Tile {
 		if (number != other.number)
 			return false;
 		return true;
-	}
+	}*/
 } 

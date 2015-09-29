@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
+import com.hanabi.type.TileType;
 import com.hanabi.type.TileType.Color;
 
 public class BoardConf {
@@ -24,19 +26,5 @@ public class BoardConf {
 			boardConfInstance = new BoardConf();
 		}
 		return boardConfInstance;
-	}
-	
-	public void createTiles() {
-		
-	}
-	
-	class TileBag {
-		
-		
-		
-		public TileBag() {
-			
-		}
-		
 	}
 }
