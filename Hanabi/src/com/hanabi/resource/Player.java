@@ -8,8 +8,11 @@ public class Player {
 	private List<Tile> tiles = new ArrayList<Tile>();
 	private Tiles theboard;
 	
-	public Player(Tiles theboard) {
+	public Player(Tiles theboard, int nTiles) {
 		this.theboard = theboard;
+		for (int i = 0; i < nTiles; ++i) {
+			tiles.add(theboard.removeTile());
+		}
 	}
 	
 	private void drawTile() {
@@ -33,15 +36,6 @@ public class Player {
 		tiles.remove(position);
 		drawTile();
 	}
-	
-	public void giveHint(Player player, Tiles.Color color) {
-		player.receiveHint(color);
-	}
-
-	public void giveHint(Player player, int number) {
-		player.receiveHint(number);
-	}
-		
 	public void receiveHint(Tiles.Color color) {
 		for (Tile tile : tiles) {
 				tile.colorHint(color);
@@ -59,20 +53,12 @@ public class Player {
 		}
 	}
 	
-	enum Move {
-		HINT, DISCARD, PLAY
+	public List<Tile> getTiles() {
+		return tiles;
 	}
 	
-	public void turn(String move, String[] args) {
-		if (move.equals(Move.DISCARD.toString())) {
-			int position = Integer.parseInt(args[0]);
-		} else if (move.equals(Move.PLAY.toString())) {
-			int position = Integer.parseInt(args[0]);
-		} else if (move.equals(Move.HINT.toString())) {
-			if (args[1].equals("COLOR")) {
-				
-			}
-		}
+	enum Move {
+		HINT, DISCARD, PLAY
 	}
 	
 }

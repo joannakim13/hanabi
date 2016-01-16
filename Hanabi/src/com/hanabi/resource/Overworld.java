@@ -1,17 +1,26 @@
 package com.hanabi.resource;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Overworld {
-	
-	private static List<Player> players = new ArrayList<Player>();
-	
+
 	public static void main(String[] args) {
-		int nPlayers = Integer.parseInt(args[1]);
-		Tiles tiles = new Tiles(false);
-		for (int i = 0; i < nPlayers; ++i) {
-			players.add(new Player(tiles));
+		int nPlayers = Integer.parseInt(args[0]);
+		boolean multi = Boolean.parseBoolean(args[1]);
+		Tiles tiles = new Tiles(multi, nPlayers);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				System.in));
+		try {
+			String line = "";
+			while (line != null) {
+				tiles.print();
+				line = reader.readLine();
+				tiles.turn(line.split("\\s+"));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
