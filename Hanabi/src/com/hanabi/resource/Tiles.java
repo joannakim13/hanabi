@@ -60,15 +60,33 @@ public class Tiles {
 	public void playTile(Tile tile) {
 		if (played.get(tile.color) == tile.number - 1) {
 			played.put(tile.color, played.get(tile.color)+1);
+			if (tile.number == 5) {
+				hints++;
+			}
 		} else {
 			System.out.println("You lost a life");
 			lives--;
+			if (lives == 0) {
+				lose();
+			}
 			discardTile(tile);
 		}
 	}
 	
+	public void lose() {
+		System.out.println("You lost");
+		System.exit(0);
+	}
+	
 	public void discardTile(Tile tile) {
 		discard.get(tile.color).put(tile.number, discard.get(tile.color).get(tile.number) + 1);
+		if (played.get(tile.color) < tile.number) {
+			int number = discard.get(tile.color).get(tile.number);
+			if ((number == 3 && tile.number == 1) || (number == 2 && (tile.number >= 2 && tile.number <= 4) || (number == 1 && tile.number == 5))) {
+				lose();
+			}
+		}
+		hints++;
 	}
 
 	
@@ -80,20 +98,27 @@ public class Tiles {
 				System.out.println("Tile position should be between 1 and " + nTiles);
 				return;
 			}
-			players[turn++].discardTile(position-1);
+			players[turn].discardTile(position-1);
+			turn = (turn + 1) % players.length;
 		} else if (move.equalsIgnoreCase(Move.PLAY.toString())) {
 			int position = Integer.parseInt(args[1]);
 			if (position <= 0 || position > nTiles) {
 				System.out.println("Tile position should be between 1 and " + nTiles);
 				return;
 			}
-			players[turn++].playTile(position-1);
+			players[turn].playTile(position-1);
+			turn = (turn + 1) % players.length;
 		} else if (move.equalsIgnoreCase(Move.HINT.toString())) {
+			if (hints == 0) {
+				System.out.println("Out of hints");
+				return;
+			}
 			if (args[1].equalsIgnoreCase("COLOR")) {
 				try {
 					Tiles.Color color = Tiles.Color.valueOf(args[2]);
 					giveHint(Integer.valueOf(args[3]), color);
 					turn++;
+					hints--;
 				} catch (IllegalArgumentException e) {
 					System.out.println("Color " + args[2] + " is not valid color.");
 					return;
@@ -102,6 +127,7 @@ public class Tiles {
 				int number = Integer.valueOf(args[2]);
 				giveHint(Integer.valueOf(args[3]), number);
 				turn++;
+				hints--;
 			} else {
 				System.out.println("usage: hint color <color> <playerNumber>\nhint number <number> <playerNumber>\n");
 			}
@@ -133,7 +159,7 @@ public class Tiles {
 	public void print() {
 		System.out.println("HINTS: " + hints + ", LIVES: " + lives);
 		for (int i = 0; i < players.length; ++i ) {
-			System.out.println("PLAYER " + i);
+			System.out.println("PLAYER " + (i+1));
 			for (Tile tile : players[i].getTiles()) {
 				System.out.print(tile + ", ");
 			}
@@ -144,6 +170,16 @@ public class Tiles {
 			System.out.print(color);
 			for (int i = 1; i <= played.get(color); ++i) {
 				System.out.print(" " + i) ;
+			}
+			System.out.println();
+		}
+		System.out.println("DISCARDED TILES");
+		for (Color color : discard.keySet()) {
+			System.out.print(color.toString());
+			for (int i = 1; i <= 5; ++i) {
+				if (discard.get(color).get(i) != 0) {
+					System.out.print("(" + color.toString() + "," + i + "):"+discard.get(color).get(i) + " ");
+				}
 			}
 			System.out.println();
 		}
