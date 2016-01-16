@@ -22,6 +22,8 @@ public class Tiles {
 	private int hints = 8;
 	private Player[] players;
 	private int turn = 0;
+	
+	private int nTiles;
 
 	public Tiles(boolean multi, int nPlayers) {
 		for (Color color : Color.values()) {
@@ -37,16 +39,17 @@ public class Tiles {
 				board.add(new Tile(4, color));
 				board.add(new Tile(5, color));
 				played.put(color, 0);
+				Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 				for (int i = 1; i <= 5; ++i) {
-					Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 					map.put(i, 0);
-					discard.put(color, map);
 				}
+				discard.put(color, map);
 			}
 		}
 		players = new Player[nPlayers];
+		nTiles = nPlayers < 4 ? 5 : 4;
 		for (int i = 0; i < nPlayers; ++i) {
-			players[i] = new Player(this, nPlayers < 4 ? 5 : 4);
+			players[i] = new Player(this, nTiles);
 		}
 	}
 	
@@ -58,7 +61,9 @@ public class Tiles {
 		if (played.get(tile.color) == tile.number - 1) {
 			played.put(tile.color, played.get(tile.color)+1);
 		} else {
+			System.out.println("You lost a life");
 			lives--;
+			discardTile(tile);
 		}
 	}
 	
@@ -69,28 +74,59 @@ public class Tiles {
 	
 	public void turn(String[] args) {
 		String move = args[0];
-		if (move.equals(Move.DISCARD.toString())) {
+		if (move.equalsIgnoreCase(Move.DISCARD.toString())) {
 			int position = Integer.parseInt(args[1]);
-			players[turn].discardTile(position);
-		} else if (move.equals(Move.PLAY.toString())) {
+			if (position <= 0 || position > nTiles) {
+				System.out.println("Tile position should be between 1 and " + nTiles);
+				return;
+			}
+			players[turn++].discardTile(position-1);
+		} else if (move.equalsIgnoreCase(Move.PLAY.toString())) {
 			int position = Integer.parseInt(args[1]);
-			players[turn].playTile(position);
-		} else if (move.equals(Move.HINT.toString())) {
-			if (args[1].equals("COLOR")) {
-				Tiles.Color color = Tiles.Color.valueOf(args[2]);
-				giveHint(Integer.valueOf(args[3]), color);
-			} else if (args[1].equals("NUMBER")) {
+			if (position <= 0 || position > nTiles) {
+				System.out.println("Tile position should be between 1 and " + nTiles);
+				return;
+			}
+			players[turn++].playTile(position-1);
+		} else if (move.equalsIgnoreCase(Move.HINT.toString())) {
+			if (args[1].equalsIgnoreCase("COLOR")) {
+				try {
+					Tiles.Color color = Tiles.Color.valueOf(args[2]);
+					giveHint(Integer.valueOf(args[3]), color);
+					turn++;
+				} catch (IllegalArgumentException e) {
+					System.out.println("Color " + args[2] + " is not valid color.");
+					return;
+				}
+			} else if (args[1].equalsIgnoreCase("NUMBER")) {
 				int number = Integer.valueOf(args[2]);
 				giveHint(Integer.valueOf(args[3]), number);
+				turn++;
+			} else {
+				System.out.println("usage: hint color <color> <playerNumber>\nhint number <number> <playerNumber>\n");
 			}
+		} else {
+			System.out.println("usage: discard <position>\nplay <position>\nhint color <color> <playerNumber>\nhint number <number> <playerNumber>\n");
 		}
 	}
 	
 	public void giveHint(int player, Tiles.Color color) {
+		if (player <= 0 || player > players.length) {
+			System.out.println("Player " + player + " not a valid player.");
+			return;
+		}
 		players[player].receiveHint(color);
 	}
 
 	public void giveHint(int player, int number) {
+		if (player <= 0 || player > players.length) {
+			System.out.println("Player " + player + " not a valid player.");
+			return;
+		}
+		if (number < 1 || number > 5) {
+			System.out.println("Number " + number + " not a valid number.");
+			return;
+		}
 		players[player].receiveHint(number);
 	}
 		
