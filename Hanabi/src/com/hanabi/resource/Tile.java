@@ -1,46 +1,30 @@
 package com.hanabi.resource;
 
-import com.hanabi.type.TileType;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Tile {
 
 	public int number;
-	public TileType.Color color;
-	public boolean numberHinted = false;
-	public boolean colorHinted = false;
+	public Tiles.Color color;
+	private boolean numberHinted = false;
+	private Set<Tiles.Color> colorsHinted = new HashSet<Tiles.Color>();
 	
-	public Tile(int n, TileType.Color c) {
+	public Tile(int n, Tiles.Color c) {
 		number = n;
 		color = c;
 	}
 	
+	public void numberHint() {
+		numberHinted = true;
+	}
+	
+	public void colorHint(Tiles.Color colorHint) {
+		colorsHinted.add(colorHint);
+	}
+	
 	@Override
 	public String toString() {
-		return "(" + number + ", " + color + ")";
-	} 
-	/*
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((color == null) ? 0 : color.hashCode());
-		result = prime * result + number;
-		return result;
+		return "(" + number	 + "," + color + ")";
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Tile other = (Tile) obj;
-		if (color != other.color)
-			return false;
-		if (number != other.number)
-			return false;
-		return true;
-	}*/
 } 
