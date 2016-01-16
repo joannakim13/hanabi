@@ -10,7 +10,7 @@ public class SetRandom<T> {
 
 	private List<T> list = new ArrayList<T>();
 	public Set<T> set = new HashSet<T>();
-	
+
 	public boolean add(T element) {
 		if (set.contains(element)) {
 			return false;
@@ -20,7 +20,7 @@ public class SetRandom<T> {
 			return true;
 		}
 	}
-	
+
 	public T removeRandom() {
 		int index = new Random().nextInt(list.size());
 		T element = list.get(index);
@@ -29,5 +29,9 @@ public class SetRandom<T> {
 		list.set(index, last);
 		list.remove(list.size() - 1);
 		return element;
+	}
+
+	public int size() {
+	  return list.size();
 	}
 }
